@@ -14,11 +14,11 @@ use crate::{
 
 #[derive(Copy, Clone, Debug)]
 pub struct FalconParameters {
-    pub(crate) n: usize,
-    pub(crate) sigma: f64,
-    pub(crate) sigmin: f64,
-    pub(crate) sig_bound: i64,
-    pub(crate) sig_bytelen: usize,
+    pub n: usize,
+    pub sigma: f64,
+    pub sigmin: f64,
+    pub sig_bound: i64,
+    pub sig_bytelen: usize,
 }
 
 pub enum FalconVariant {
@@ -34,7 +34,7 @@ impl FalconVariant {
             _ => unreachable!(),
         }
     }
-    pub(crate) const fn parameters(&self) -> FalconParameters {
+    pub const fn parameters(&self) -> FalconParameters {
         match self {
             FalconVariant::Falcon512 => FalconParameters {
                 n: 512,
@@ -89,13 +89,13 @@ impl<const N: usize> SecretKey<N> {
         Self::from_b0(b0)
     }
 
-    pub(crate) fn gen_b0(seed: [u8; 32]) -> [Polynomial<i16>; 4] {
+    pub fn gen_b0(seed: [u8; 32]) -> [Polynomial<i16>; 4] {
         let mut rng: StdRng = SeedableRng::from_seed(seed);
         let (f, g, capital_f, capital_g) = ntru_gen(N, &mut rng);
         [g, -f, capital_g, -capital_f]
     }
 
-    pub(crate) fn from_b0(b0: [Polynomial<i16>; 4]) -> Self {
+    pub fn from_b0(b0: [Polynomial<i16>; 4]) -> Self {
         let b0_fft = b0
             .clone()
             .map(|c| c.map(|cc| Complex64::new(*cc as f64, 0.0)).fft());

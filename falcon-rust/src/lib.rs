@@ -55,16 +55,16 @@
 //! falcon512::Signature::from_bytes(&sig_buffer);
 //! ```
 
-pub(crate) mod cyclotomic_fourier;
-pub(crate) mod encoding;
-pub(crate) mod falcon;
+pub mod cyclotomic_fourier;
+pub mod encoding;
+pub mod falcon;
 pub mod falcon1024;
 pub mod falcon512;
-pub(crate) mod falcon_field;
-pub(crate) mod fast_fft;
-pub(crate) mod ffsampling;
-pub(crate) mod inverse;
+pub mod falcon_field;
+pub mod fast_fft;
+pub mod ffsampling;
+pub mod inverse;
 pub mod math; // pub for benching
 pub mod polynomial; // pub for benching
-pub(crate) mod samplerz;
-pub(crate) mod u32_field;
+pub mod samplerz;
+pub mod u32_field;

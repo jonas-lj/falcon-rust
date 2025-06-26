@@ -7,7 +7,7 @@ use crate::{falcon, fast_fft::FastFft, polynomial::Polynomial, samplerz::sampler
 /// Computes the Gram matrix. The argument must be a 2x2 matrix
 /// whose elements are equal-length vectors of complex numbers,
 /// representing polynomials in FFT domain.
-pub(crate) fn gram(b: [Polynomial<Complex64>; 4]) -> [Polynomial<Complex64>; 4] {
+pub fn gram(b: [Polynomial<Complex64>; 4]) -> [Polynomial<Complex64>; 4] {
     const N: usize = 2;
     let mut g: [Polynomial<Complex<f64>>; 4] = [
         Polynomial::zero(),
@@ -30,7 +30,7 @@ pub(crate) fn gram(b: [Polynomial<Complex64>; 4]) -> [Polynomial<Complex64>; 4] 
 ///     L D L* = G
 /// where D is diagonal, and L is lower-triangular. The elements of matrices
 /// are in FFT domain.
-pub(crate) fn ldl(
+pub fn ldl(
     g: [Polynomial<Complex64>; 4],
 ) -> ([Polynomial<Complex64>; 4], [Polynomial<Complex64>; 4]) {
     let zero = Polynomial::<Complex64>::one();
@@ -47,7 +47,7 @@ pub(crate) fn ldl(
 }
 
 #[derive(Debug, Clone)]
-pub(crate) enum LdlTree {
+pub enum LdlTree {
     Branch(Polynomial<Complex64>, Box<LdlTree>, Box<LdlTree>),
     Leaf([Complex64; 2]),
 }
@@ -57,7 +57,7 @@ pub(crate) enum LdlTree {
 /// polynomials, given in FFT form.
 ///
 /// [1]: https://falcon-sign.info/falcon.pdf
-pub(crate) fn ffldl(gram_matrix: [Polynomial<Complex64>; 4]) -> LdlTree {
+pub fn ffldl(gram_matrix: [Polynomial<Complex64>; 4]) -> LdlTree {
     let n = gram_matrix[0].coefficients.len();
     let (l, d) = ldl(gram_matrix);
 
@@ -76,7 +76,7 @@ pub(crate) fn ffldl(gram_matrix: [Polynomial<Complex64>; 4]) -> LdlTree {
     }
 }
 
-pub(crate) fn normalize_tree(tree: &mut LdlTree, sigma: f64) {
+pub fn normalize_tree(tree: &mut LdlTree, sigma: f64) {
     match tree {
         LdlTree::Branch(_ell, left, right) => {
             normalize_tree(left, sigma);
@@ -92,7 +92,7 @@ pub(crate) fn normalize_tree(tree: &mut LdlTree, sigma: f64) {
 /// Sample short polynomials using a Falcon tree. Algorithm 11 from the spec [1, p.40].
 ///
 /// [1]: https://falcon-sign.info/falcon.pdf
-pub(crate) fn ffsampling(
+pub fn ffsampling(
     t: &(Polynomial<Complex64>, Polynomial<Complex64>),
     tree: &LdlTree,
     parameters: &falcon::FalconParameters,

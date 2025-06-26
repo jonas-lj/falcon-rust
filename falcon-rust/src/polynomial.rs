@@ -232,7 +232,7 @@ impl<
     ///
     /// This function assumes that F is a field; otherwise the gcd will never end.
     #[allow(dead_code)]
-    pub(crate) fn cyclotomic_ring_inverse(&self, n: usize) -> Self {
+    pub fn cyclotomic_ring_inverse(&self, n: usize) -> Self {
         let mut cyclotomic_coefficients = vec![F::zero(); n + 1];
         cyclotomic_coefficients[0] = F::one();
         cyclotomic_coefficients[n] = F::one();
@@ -314,7 +314,7 @@ impl<
     /// Implementation adapted from Wikipedia [1].
     ///
     /// [1]: https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm#Pseudocode
-    pub(crate) fn xgcd(a: &Self, b: &Self) -> (Self, Self, Self) {
+    pub fn xgcd(a: &Self, b: &Self) -> (Self, Self, Self) {
         if a.is_zero() || b.is_zero() {
             return (Self::zero(), Self::zero(), Self::zero());
         }
@@ -335,7 +335,7 @@ impl<
 
 impl<F: Clone + Into<f64>> Polynomial<F> {
     #[allow(dead_code)]
-    pub(crate) fn l2_norm(&self) -> f64 {
+    pub fn l2_norm(&self) -> f64 {
         self.coefficients
             .iter()
             .map(|i| Into::<f64>::into(i.clone()))
@@ -343,7 +343,7 @@ impl<F: Clone + Into<f64>> Polynomial<F> {
             .sum::<f64>()
             .sqrt()
     }
-    pub(crate) fn l2_norm_squared(&self) -> f64 {
+    pub fn l2_norm_squared(&self) -> f64 {
         self.coefficients
             .iter()
             .map(|i| Into::<f64>::into(i.clone()))
@@ -621,7 +621,7 @@ where
 
 /// Hash a string to a random polynomial in ZZ[ X ] mod <Phi(X), q>.
 /// Algorithm 3, "HashToPoint" in the spec (page 31).
-pub(crate) fn hash_to_point(string: &[u8], n: usize) -> Polynomial<Felt> {
+pub fn hash_to_point(string: &[u8], n: usize) -> Polynomial<Felt> {
     const K: u32 = (1u32 << 16) / Q;
 
     let mut hasher = Shake256::default();

@@ -4,7 +4,7 @@ use itertools::Itertools;
 use num::{One, Zero};
 use num_complex::Complex64;
 
-pub(crate) trait Inverse: Copy + Zero + MulAssign + One {
+pub trait Inverse: Copy + Zero + MulAssign + One {
     /// Get the inverse of a, or zero if it is zero.
     fn inverse_or_zero(self) -> Self;
 

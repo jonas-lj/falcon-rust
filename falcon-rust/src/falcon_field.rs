@@ -10,10 +10,10 @@ use crate::cyclotomic_fourier::CyclotomicFourier;
 use crate::inverse::Inverse;
 
 /// q is the integer modulus which is used in Falcon.
-pub(crate) const Q: u32 = 12 * 1024 + 1;
+pub const Q: u32 = 12 * 1024 + 1;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub(crate) struct Felt(u32);
+pub struct Felt(u32);
 
 impl Felt {
     pub const fn new(value: i16) -> Self {

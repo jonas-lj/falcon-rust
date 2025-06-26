@@ -7,7 +7,7 @@ use num::Integer;
 /// This is a deprecated compress routine used now only for testing
 /// compatibility with the new, faster implementation (below).
 #[allow(dead_code)]
-pub(crate) fn compress_slow(v: &[i16], slen: usize) -> Option<Vec<u8>> {
+pub fn compress_slow(v: &[i16], slen: usize) -> Option<Vec<u8>> {
     let mut bitvector: BitVec = BitVec::with_capacity(slen);
     for coeff in v {
         // encode sign
@@ -49,7 +49,7 @@ pub(crate) fn compress_slow(v: &[i16], slen: usize) -> Option<Vec<u8>> {
 /// Algorithm 17 p. 47 of the specification [1].
 ///
 /// [1]: https://falcon-sign.info/falcon.pdf
-pub(crate) fn compress(v: &[i16], byte_length: usize) -> Option<Vec<u8>> {
+pub fn compress(v: &[i16], byte_length: usize) -> Option<Vec<u8>> {
     // encode each coefficient separately; join later
     let lengths_and_coefficients = v.iter().map(|c| compress_coefficient(*c)).collect_vec();
     let total_length = lengths_and_coefficients
@@ -110,7 +110,7 @@ fn compress_coefficient(coeff: i16) -> (usize, u8) {
 ///  This is a deprecated decompress routine used now only for testing
 /// compatibility with the new, faster implementation (below).
 #[allow(dead_code)]
-pub(crate) fn decompress_slow(x: &[u8], n: usize) -> Option<Vec<i16>> {
+pub fn decompress_slow(x: &[u8], n: usize) -> Option<Vec<i16>> {
     let bitvector = BitVec::from_bytes(x);
     let mut index = 0;
     let mut result = Vec::with_capacity(n);
@@ -153,7 +153,7 @@ pub(crate) fn decompress_slow(x: &[u8], n: usize) -> Option<Vec<i16>> {
 /// Algorithm 18 p. 48 of the specification [1].
 ///
 /// [1]: https://falcon-sign.info/falcon.pdf
-pub(crate) fn decompress(x: &[u8], n: usize) -> Option<Vec<i16>> {
+pub fn decompress(x: &[u8], n: usize) -> Option<Vec<i16>> {
     let bitvector = BitVec::from_bytes(x);
     let mut index = 0;
     let mut result = Vec::with_capacity(n);

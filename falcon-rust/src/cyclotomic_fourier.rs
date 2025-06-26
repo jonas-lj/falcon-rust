@@ -8,7 +8,7 @@ use num_complex::Complex64;
 
 use crate::inverse::Inverse;
 
-pub(crate) trait CyclotomicFourier
+pub trait CyclotomicFourier
 where
     Self: Sized
         + Copy
