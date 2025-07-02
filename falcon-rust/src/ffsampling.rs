@@ -98,6 +98,7 @@ pub fn ffsampling(
     parameters: &falcon::FalconParameters,
     rng: &mut dyn RngCore,
 ) -> (Polynomial<Complex64>, Polynomial<Complex64>) {
+    // println!("          inside ffsampling...");
     match tree {
         LdlTree::Branch(ell, left, right) => {
             let bold_t1 = t.1.split_fft();
@@ -114,6 +115,7 @@ pub fn ffsampling(
             (z0, z1)
         }
         LdlTree::Leaf(value) => {
+            // println!("          down to leaf level...");
             let z0 = sampler_z(t.0.coefficients[0].re, value[0].re, parameters.sigmin, rng);
             let z1 = sampler_z(t.1.coefficients[0].re, value[0].re, parameters.sigmin, rng);
             (

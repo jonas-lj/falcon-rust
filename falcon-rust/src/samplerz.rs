@@ -98,6 +98,7 @@ pub fn sampler_z(mu: f64, sigma: f64, sigma_min: f64, rng: &mut dyn RngCore) -> 
     let r = mu - s;
     let ccs = sigma_min * isigma;
     loop {
+        // println!("              sampling single value...");
         let z0 = base_sampler(rng.gen());
         let random_byte: u8 = rng.gen();
         let b = (random_byte & 1) as i16;
@@ -106,8 +107,10 @@ pub fn sampler_z(mu: f64, sigma: f64, sigma_min: f64, rng: &mut dyn RngCore) -> 
         //    x = ((z-r)^2)/(2*sigma^2) - ((z-b)^2)/(2*sigma0^2)
         let x = zf_min_r * zf_min_r * dss - (z0 * z0) as f64 * INV_2SIGMA_MAX_SQ;
         if ber_exp(x, ccs, rng.gen()) {
+            // println!("                  looping sampling...");
             return z + (s as i16);
         }
+        // return z + (s as i16);
     }
 }
 

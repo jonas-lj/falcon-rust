@@ -38,14 +38,18 @@ impl FalconVariant {
         match self {
             FalconVariant::Falcon512 => FalconParameters {
                 n: 512,
-                sigma: 165.7366171829776,
+                // sigma: 165.7366171829776,
+                // sigmin: 1.2778336969128337,
+                sigma: 15.7366171829776,
                 sigmin: 1.2778336969128337,
                 sig_bound: 34034726,
                 sig_bytelen: 666,
             },
             FalconVariant::Falcon1024 => FalconParameters {
                 n: 1024,
-                sigma: 168.38857144654395,
+                // sigma: 168.38857144654395,
+                // sigmin: 1.298280334344292,
+                sigma: 15.38857144654395,
                 sigmin: 1.298280334344292,
                 sig_bound: 70265242,
                 sig_bytelen: 1280,
@@ -296,7 +300,7 @@ impl<const N: usize> Eq for SecretKey<N> {}
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct PublicKey<const N: usize> {
-    h: Polynomial<Felt>,
+    pub h: Polynomial<Felt>,
 }
 
 impl<const N: usize> PublicKey<N> {
@@ -374,8 +378,8 @@ impl<const N: usize> PublicKey<N> {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Signature<const N: usize> {
-    r: [u8; 40],
-    s: Vec<u8>,
+    pub r: [u8; 40],
+    pub s: Vec<u8>,
 }
 
 impl<const N: usize> Signature<N> {
@@ -453,7 +457,8 @@ pub fn keygen<const N: usize>(seed: [u8; 32]) -> (SecretKey<N>, PublicKey<N>) {
 pub fn sign<const N: usize>(m: &[u8], sk: &SecretKey<N>) -> Signature<N> {
     let mut rng = thread_rng();
     let mut r = [0u8; 40];
-    rng.fill_bytes(&mut r);
+    // rng.fill_bytes(&mut r);
+    r.fill(0);
 
     let params = FalconVariant::from_n(N).parameters();
     let bound = params.sig_bound;
@@ -467,6 +472,8 @@ pub fn sign<const N: usize>(m: &[u8], sk: &SecretKey<N>) -> Signature<N> {
         .map(|cc| Complex::new(one_over_q * cc.value() as f64, 0.0))
         .fft();
 
+    // println!("  after hashing");
+
     // B = [[FFT(g), -FFT(f)], [FFT(G), -FFT(F)]]
     let capital_f_fft = sk.b0[3].map(|&i| Complex64::new(-i as f64, 0.0)).fft();
     let f_fft = sk.b0[1].map(|&i| Complex64::new(-i as f64, 0.0)).fft();
@@ -474,6 +481,8 @@ pub fn sign<const N: usize>(m: &[u8], sk: &SecretKey<N>) -> Signature<N> {
     let g_fft = sk.b0[0].map(|&i| Complex64::new(i as f64, 0.0)).fft();
     let t0 = c_over_q_fft.hadamard_mul(&capital_f_fft);
     let t1 = -c_over_q_fft.hadamard_mul(&f_fft);
+
+    // println!("  after compute trapdoor");
 
     let s = loop {
         let mut seed = [0u8; 32];
@@ -500,6 +509,7 @@ pub fn sign<const N: usize>(m: &[u8], sk: &SecretKey<N>) -> Signature<N> {
                 / (n as f64);
 
             if length_squared > (bound as f64) {
+                // println!("      large s, continue...");
                 continue;
             }
 
